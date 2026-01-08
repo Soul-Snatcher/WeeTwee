@@ -1,34 +1,25 @@
 const express = require('express');
 const app = express();
-<<<<<<< HEAD
-=======
-const port = process.env.PORT;
->>>>>>> 3c984095d95c683a48649edd9bf703a6713a4cb4
+require('dotenv').config();
+
+const port = process.env.PORT || 3005;
 const middleware = require('./middleware')
 const path = require('path')
-const bodyParser = require("body-parser")
 const mongoose = require("./database");
 const session = require("express-session");
-<<<<<<< HEAD
-let port = process.env.PORT;
-if (port == null || port == "") {
-  port = 3005;
-}
-=======
 
-if (port== null || port=="") {port =3005}
->>>>>>> 3c984095d95c683a48649edd9bf703a6713a4cb4
 const server = app.listen(port, () => console.log("Server listening on port " + port));
 const io = require("socket.io")(server, { pingTimeout: 60000 });
 
 app.set("view engine", "pug");
 app.set("views", "views");
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(session({
-    secret: "hello peter",
+    secret: process.env.SESSION_SECRET || "hello peter",
     resave: true,
     saveUninitialized: false
 }))
@@ -93,11 +84,11 @@ io.on("connection", socket => {
     socket.on("new message", newMessage => {
         var chat = newMessage.chat;
 
-        if(!chat.users) return console.log("Chat.users not defined");
+        if (!chat.users) return console.log("Chat.users not defined");
 
         chat.users.forEach(user => {
-            
-            if(user._id == newMessage.sender._id) return;
+
+            if (user._id == newMessage.sender._id) return;
             socket.in(user._id).emit("message received", newMessage);
         })
     });

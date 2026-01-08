@@ -5,10 +5,6 @@
 //created and returned to you the first time because of how module 
 //import/export works in ES6.
 const mongoose = require("mongoose");
-mongoose.set('useNewUrlParser', true);
-mongoose.set('useUnifiedTopology', true);
-mongoose.set('useFindAndModify', false);
-mongoose.set('useUnifiedTopology', true);
 
 class Database {
 
@@ -17,13 +13,13 @@ class Database {
     }
 
     connect() {
-        mongoose.connect("mongodb+srv://jeenjacob:2255@twitterclonecluster.iba1x.mongodb.net/TwitterCloneDB?retryWrites=true&w=majority")
-        .then(() => {
-            console.log("database connection successful");
-        })
-        .catch((err) => {
-            console.log("database connection error " + err);
-        })
+        mongoose.connect(process.env.MONGODB_URI)
+            .then(() => {
+                console.log("database connection successful");
+            })
+            .catch((err) => {
+                console.log("database connection error " + err);
+            })
     }
 }
 
